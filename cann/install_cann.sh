@@ -183,7 +183,7 @@ check_opencv() {
 build_project() {
     log_info "编译项目..."
     
-    cd "$PROJECT_ROOT/src"
+    cd "$PROJECT_ROOT/cpp"
     
     rm -rf build
     mkdir -p build && cd build
@@ -195,20 +195,40 @@ build_project() {
 }
 
 install_executable() {
-    log_info "安装可执行文件..."
-    
+    log_info "安装动态库与可执行文件..."
+
+    # 1) 安装共享库 libkzzk_cv.so → /usr/local/lib
+    local lib_dir="$PROJECT_ROOT/cpp/build/lib"
+    if [ -d "$lib_dir" ]; then
+        cp -P $lib_dir/libkzzk_cv.so* /usr/local/lib/ 2>/dev/null || true
+        chmod 755 /usr/local/lib/libkzzk_cv.so* 2>/dev/null || true
+        ldconfig
+        log_info "已安装动态库: /usr/local/lib/libkzzk_cv.so"
+    fi
+
+    # 2) 安装命令行工具 kzzk_cv → /usr/local/bin
     local exe_name="kzzk_cv"
-    local exe_path="$PROJECT_ROOT/src/build/$exe_name"
-    
+    local exe_path="$PROJECT_ROOT/cpp/build/bin/$exe_name"
+
     if [ ! -f "$exe_path" ]; then
         log_error "未找到可执行文件: $exe_path"
         exit 1
     fi
-    
+
     cp "$exe_path" "/usr/local/bin/$exe_name"
     chmod +x "/usr/local/bin/$exe_name"
-    
+
     log_info "已安装: /usr/local/bin/$exe_name"
+
+    # 3) 安装示例 test_cv → /usr/local/bin
+    local demo_name="test_cv"
+    local demo_path="$PROJECT_ROOT/cpp/build/bin/$demo_name"
+
+    if [ -f "$demo_path" ]; then
+        cp "$demo_path" "/usr/local/bin/$demo_name"
+        chmod +x "/usr/local/bin/$demo_name"
+        log_info "已安装示例: /usr/local/bin/$demo_name"
+    fi
 }
 
 show_result() {
