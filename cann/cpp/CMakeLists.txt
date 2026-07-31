@@ -271,8 +271,10 @@ function(find_system_lib OUTPUT_VAR LIB_NAME)
         message(STATUS "Found lib${LIB_NAME}: ${_found}")
         set(${OUTPUT_VAR} "${_found}" PARENT_SCOPE)
     else()
-        message(STATUS "lib${LIB_NAME} not found, using linker name")
-        set(${OUTPUT_VAR} "${LIB_NAME}" PARENT_SCOPE)
+        # 找不到就返回空：第三方 OpenCV 的 imgcodecs 自带图像解码依赖，
+        # 我们的库不需要硬链接 jpeg/tiff/png，跳过即可，避免新容器缺库导致链接失败。
+        message(STATUS "lib${LIB_NAME} not found, skipping (OpenCV imgcodecs handles image decode)")
+        set(${OUTPUT_VAR} "" PARENT_SCOPE)
     endif()
 endfunction()
 

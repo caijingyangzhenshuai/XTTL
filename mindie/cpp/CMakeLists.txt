@@ -6,13 +6,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 设置输出目录
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-# 包含目录（相对于 src 目录）
+# 包含目录
 include_directories(
-    ${PROJECT_SOURCE_DIR}/../inc
+    ${PROJECT_SOURCE_DIR}/inc
     ${PROJECT_SOURCE_DIR}/../third_party/json/include
 )
 
@@ -22,7 +22,7 @@ find_package(Threads REQUIRED)
 
 # 源代码文件
 set(SOURCES
-    kzzk_llm.cpp
+    src/kzzk_llm.cpp
 )
 
 # 创建静态库
@@ -36,7 +36,7 @@ target_link_libraries(kzzk_llm_static
 )
 
 # 创建命令行工具
-add_executable(kzzk_llm main.cpp)
+add_executable(kzzk_llm src/main.cpp)
 
 target_link_libraries(kzzk_llm
     PRIVATE
@@ -63,7 +63,7 @@ install(TARGETS kzzk_llm kzzk_llm_static
 )
 
 # 安装头文件
-install(DIRECTORY ../inc/ DESTINATION include)
+install(DIRECTORY inc/ DESTINATION include)
 
 # 打印配置信息
 message(STATUS "CURL found: ${CURL_FOUND}")

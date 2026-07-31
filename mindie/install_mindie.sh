@@ -2,7 +2,7 @@
 set -e
 
 WORKDIR="$(cd "$(dirname "$0")" && pwd)"
-BUILD_DIR="/home/HwHiAiUser/mindie/src/build"
+BUILD_DIR="/home/HwHiAiUser/mindie/cpp/build"
 EXE_NAME="kzzk_llm"
 CONFIG_FILE="/usr/local/Ascend/mindie/latest/mindie-service/conf/config.json"
 DAEMON_BIN="/usr/local/Ascend/mindie/latest/mindie-service/bin/mindieservice_daemon"
