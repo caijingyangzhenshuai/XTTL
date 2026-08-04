@@ -881,5 +881,3 @@ $LD_LIBRARY_PATH
 | [mindie/install_mindie.sh](file:///c:/Users/迟昕玥/Desktop/协同推理/code/mindie/install_mindie.sh) | MindIE 选模型 + 编译 + 配 config + 启服务 + 就绪检查 |
 
 ---
-
-*文档生成时间: 2026-07-30*
