@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace kzzk_cv {
+namespace kzzk {
 
 enum class ModelType {
     DETECTION,
@@ -54,6 +54,6 @@ struct InferenceResult {
     SegmentationResult segmentation;
 };
 
-} // namespace kzzk_cv
+} // namespace kzzk
 
 #endif // KZZK_CV_TYPES_H

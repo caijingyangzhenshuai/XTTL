@@ -11,7 +11,7 @@
 #include "acl/ops/acl_dvpp.h"
 #include "opencv2/opencv.hpp"
 
-namespace kzzk_cv {
+namespace kzzk {
 
 class YOLOv4 : public BaseModel {
 public:
@@ -95,6 +95,6 @@ private:
                     const float* box_host_buf, float x_scale, float y_scale);
 };
 
-} // namespace kzzk_cv
+} // namespace kzzk
 
 #endif // KZZK_CV_YOLOV4_H

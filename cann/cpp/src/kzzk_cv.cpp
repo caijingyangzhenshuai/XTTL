@@ -27,7 +27,7 @@
 #  define KZZK_CERR   std::cerr
 #endif
 
-namespace kzzk_cv {
+namespace kzzk {
 
 static std::string to_lower(const std::string& s) {
     std::string res = s;
@@ -152,4 +152,4 @@ InferenceResult kzzk_cv(const std::string& modelfile, const std::string& imagefi
     return result;
 }
 
-} // namespace kzzk_cv
+} // namespace kzzk

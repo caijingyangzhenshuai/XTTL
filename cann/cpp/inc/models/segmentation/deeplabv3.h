@@ -10,7 +10,7 @@
 #include "acl/acl.h"
 #include "opencv2/opencv.hpp"
 
-namespace kzzk_cv {
+namespace kzzk {
 
 class DeepLabV3 : public BaseModel {
 public:
@@ -57,6 +57,6 @@ private:
     static const int kNumClasses = 21;
 };
 
-} // namespace kzzk_cv
+} // namespace kzzk
 
 #endif // KZZK_CV_DEEPLABV3_H

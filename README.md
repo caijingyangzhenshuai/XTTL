@@ -107,7 +107,7 @@ print(result)
 ```cpp
 #include "kzzk_cv.h"
 
-InferenceResult result = kzzk_cv::kzzk_cv(model_path, image_path);
+InferenceResult result = kzzk::kzzk_cv(model_path, image_path);
 ```
 
 ### 关键特性

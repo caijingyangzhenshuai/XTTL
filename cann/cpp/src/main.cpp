@@ -49,7 +49,7 @@ std::string GetTimestamp() {
     return ss.str();
 }
 
-void SaveDetectionResults(const kzzk_cv::InferenceResult& result, const std::string& modelName,
+void SaveDetectionResults(const kzzk::InferenceResult& result, const std::string& modelName,
                           const std::string& imageFile) {
     std::string out_dir = GetOutputDir(imageFile);
     std::string timestamp = GetTimestamp();
@@ -79,7 +79,7 @@ void SaveDetectionResults(const kzzk_cv::InferenceResult& result, const std::str
     std::cout << "推理结果已保存到: " << txt_path << std::endl;
 }
 
-void SaveClassificationResults(const kzzk_cv::InferenceResult& result, const std::string& modelName,
+void SaveClassificationResults(const kzzk::InferenceResult& result, const std::string&modelName,
                                 const std::string& imageFile) {
     std::string out_dir = GetOutputDir(imageFile);
     std::string timestamp = GetTimestamp();
@@ -110,7 +110,7 @@ void SaveClassificationResults(const kzzk_cv::InferenceResult& result, const std
     std::cout << "推理结果已保存到: " << txt_path << std::endl;
 }
 
-void SaveSegmentationResults(const kzzk_cv::InferenceResult& result, const std::string& modelName,
+void SaveSegmentationResults(const kzzk::InferenceResult& result, const std::string& modelName,
                               const std::string& imageFile) {
     std::string out_dir = GetOutputDir(imageFile);
     std::string timestamp = GetTimestamp();
@@ -163,7 +163,7 @@ void SaveSegmentationResults(const kzzk_cv::InferenceResult& result, const std::
     std::cout << "推理结果已保存到: " << txt_path << std::endl;
 }
 
-void PrintDetectionResults(const kzzk_cv::InferenceResult& result, const std::string& modelName) {
+void PrintDetectionResults(const kzzk::InferenceResult& result, const std::string& modelName) {
     std::cout << "Inference Results:" << std::endl;
     std::cout << modelName << "目标检测推理" << std::endl;
     std::cout << "Total objects: " << result.detections.size() << std::endl;
@@ -178,7 +178,7 @@ void PrintDetectionResults(const kzzk_cv::InferenceResult& result, const std::st
     }
 }
 
-void PrintClassificationResults(const kzzk_cv::InferenceResult& result, const std::string& modelName) {
+void PrintClassificationResults(const kzzk::InferenceResult& result, const std::string& modelName) {
     std::cout << "Inference Results:" << std::endl;
     std::cout << modelName << "图像分类推理" << std::endl;
     std::cout << "Top 5 classes:" << std::endl;
@@ -194,7 +194,7 @@ void PrintClassificationResults(const kzzk_cv::InferenceResult& result, const st
     }
 }
 
-void PrintSegmentationResults(const kzzk_cv::InferenceResult& result, const std::string& modelName) {
+void PrintSegmentationResults(const kzzk::InferenceResult& result, const std::string& modelName) {
     const auto& seg = result.segmentation;
 
     std::cout << "Inference Results:" << std::endl;
@@ -245,7 +245,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    kzzk_cv::InferenceResult result = kzzk_cv::kzzk_cv(modelFile, imageFile);
+    kzzk::InferenceResult result = kzzk::kzzk_cv(modelFile, imageFile);
 
     if (result.infer_cost_ms == 0 && result.detections.empty() &&
         result.classifications.empty() && result.segmentation.class_info.empty()) {
@@ -255,19 +255,19 @@ int main(int argc, char* argv[]) {
 
     std::cout << "Total inference cost: " << result.infer_cost_ms << "ms" << std::endl;
 
-    kzzk_cv::ModelType type = result.model_type;
+    kzzk::ModelType type = result.model_type;
     std::string displayName = result.model_name;
 
     switch (type) {
-        case kzzk_cv::ModelType::DETECTION:
+        case kzzk::ModelType::DETECTION:
             PrintDetectionResults(result, displayName);
             SaveDetectionResults(result, displayName, imageFile);
             break;
-        case kzzk_cv::ModelType::CLASSIFICATION:
+        case kzzk::ModelType::CLASSIFICATION:
             PrintClassificationResults(result, displayName);
             SaveClassificationResults(result, displayName, imageFile);
             break;
-        case kzzk_cv::ModelType::SEGMENTATION:
+        case kzzk::ModelType::SEGMENTATION:
             PrintSegmentationResults(result, displayName);
             SaveSegmentationResults(result, displayName, imageFile);
             break;

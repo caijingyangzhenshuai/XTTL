@@ -6,7 +6,7 @@
 #include <cmath>
 #include <cstring>
 
-namespace kzzk_cv {
+namespace kzzk {
 
 const int   RT_DETR::kInputWidth    = 640;
 const int   RT_DETR::kInputHeight   = 640;
@@ -393,4 +393,4 @@ size_t num_inputs = aclmdlGetNumInputs(model_desc_);
     return result;
 }
 
-} // namespace kzzk_cv
+} // namespace kzzk

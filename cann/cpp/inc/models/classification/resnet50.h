@@ -9,7 +9,7 @@
 #include "acl/acl.h"
 #include "opencv2/opencv.hpp"
 
-namespace kzzk_cv {
+namespace kzzk {
 
 class ResNet50 : public BaseModel {
 public:
@@ -50,6 +50,6 @@ private:
     static const int kInputHeight = 224;
 };
 
-} // namespace kzzk_cv
+} // namespace kzzk
 
 #endif // KZZK_CV_RESNET50_H

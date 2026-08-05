@@ -4,7 +4,7 @@
 #include <chrono>
 #include <cmath>
 
-namespace kzzk_cv {
+namespace kzzk {
 
 ResNet50::ResNet50()
     : context_(nullptr), stream_(nullptr),
@@ -307,4 +307,4 @@ InferenceResult ResNet50::Infer(const std::string& image_path) {
     return result;
 }
 
-} // namespace kzzk_cv
+} // namespace kzzk

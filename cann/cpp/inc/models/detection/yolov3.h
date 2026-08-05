@@ -10,7 +10,7 @@
 #include "acl/acl.h"
 #include "opencv2/opencv.hpp"
 
-namespace kzzk_cv {
+namespace kzzk {
 
 // YOLOv3：COCO 80 类目标检测，模型输入为 YUV NV12（416x416）+ image_info（4 个 float）
 // 完全对齐 cann/python/models/detection/yolov3.py 的预处理与后处理
@@ -72,6 +72,6 @@ private:
     static const int   kTopK;            // 10（对齐 Python TOP_K）
 };
 
-} // namespace kzzk_cv
+} // namespace kzzk
 
 #endif // KZZK_CV_YOLOV3_H

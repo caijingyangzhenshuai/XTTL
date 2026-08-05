@@ -353,17 +353,17 @@ std::string LLMClient::chat(
     return "";
 }
 
-std::string LLMClient::kzzk_llm(const std::string& modelpath, const std::string& prompt) {
+std::string LLMClient::kzzk_llm(const std::string& modelfile, const std::string& prompt) {
     InferenceOptions options;
-    return kzzk_llm(modelpath, prompt, options);
+    return kzzk_llm(modelfile, prompt, options);
 }
 
-std::string LLMClient::kzzk_llm(const std::string& modelpath, const std::string& prompt, const InferenceOptions& options) {
-    if (modelpath.empty() || prompt.empty()) {
+std::string LLMClient::kzzk_llm(const std::string& modelfile, const std::string& prompt, const InferenceOptions& options) {
+    if (modelfile.empty() || prompt.empty()) {
         return "";
     }
     std::vector<ChatMessage> messages = {{ "user", prompt }};
-    return chat(modelpath, messages, false, options);
+    return chat(modelfile, messages, false, options);
 }
 
 std::string LLMClient::chatWithJson(
@@ -498,14 +498,14 @@ ModelInfo LLMClient::getModelInfo(const std::string& modelName) {
     return info;
 }
 
-std::string kzzk_llm(const std::string& modelpath, const std::string& prompt) {
+std::string kzzk_llm(const std::string& modelfile, const std::string& prompt) {
     LLMClient client;
-    return client.kzzk_llm(modelpath, prompt);
+    return client.kzzk_llm(modelfile, prompt);
 }
 
-std::string kzzk_llm(const std::string& modelpath, const std::string& prompt, const InferenceOptions& options) {
+std::string kzzk_llm(const std::string& modelfile, const std::string& prompt, const InferenceOptions& options) {
     LLMClient client;
-    return client.kzzk_llm(modelpath, prompt, options);
+    return client.kzzk_llm(modelfile, prompt, options);
 }
 
 } // namespace kzzk

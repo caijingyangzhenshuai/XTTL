@@ -9,7 +9,7 @@
 #include "acl/acl.h"
 #include "opencv2/opencv.hpp"
 
-namespace kzzk_cv {
+namespace kzzk {
 
 // VGG-SSD：VOC 20 类目标检测，单输入模型
 //   AIPP 模式：输入 304x300 NCHW uint8（无归一化，AIPP 配置在 OM 内）
@@ -84,6 +84,6 @@ private:
     static const int   kTopK;             // 5
 };
 
-} // namespace kzzk_cv
+} // namespace kzzk
 
 #endif // KZZK_CV_VGG_SSD_H

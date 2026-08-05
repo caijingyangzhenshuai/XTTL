@@ -4,10 +4,10 @@
 #include <string>
 #include "types.h"
 
-namespace kzzk_cv {
+namespace kzzk {
 
 InferenceResult kzzk_cv(const std::string& modelfile, const std::string& imagefile);
 
-} // namespace kzzk_cv
+} // namespace kzzk
 
 #endif // KZZK_CV_H

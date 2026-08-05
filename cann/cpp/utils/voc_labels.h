@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-namespace kzzk_cv {
+namespace kzzk {
 
 // VOC 2012 数据集 20 类（含 background 共 21 个）
 // 对齐 cann/python/models/detection/vgg_ssd.py 中的 LABELS_VOC
@@ -28,6 +28,6 @@ inline const std::string& GetVocLabel(int class_id) {
     return unknown;
 }
 
-} // namespace kzzk_cv
+} // namespace kzzk
 
 #endif // KZZK_CV_VOC_LABELS_H

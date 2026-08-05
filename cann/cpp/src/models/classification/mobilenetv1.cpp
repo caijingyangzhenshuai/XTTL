@@ -5,7 +5,7 @@
 #include <cmath>
 #include <cstring>
 
-namespace kzzk_cv {
+namespace kzzk {
 
 namespace {
 
@@ -400,4 +400,4 @@ InferenceResult MobileNetV1::Infer(const std::string& image_path) {
     return result;
 }
 
-} // namespace kzzk_cv
+} // namespace kzzk

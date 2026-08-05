@@ -5,7 +5,7 @@
 #include <cmath>
 #include <cstring>
 
-namespace kzzk_cv {
+namespace kzzk {
 
 // ============================================================
 // 静默模式开关：去掉所有 [INFO]/[DEBUG]/[WARN] 中间日志
@@ -606,4 +606,4 @@ InferenceResult VGG16::Infer(const std::string& image_path) {
     return result;
 }
 
-} // namespace kzzk_cv
+} // namespace kzzk

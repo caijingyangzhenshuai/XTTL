@@ -79,8 +79,8 @@ public:
     );
 
     // 简化接口 - 单轮对话
-    std::string kzzk_llm(const std::string& modelpath, const std::string& prompt);
-    std::string kzzk_llm(const std::string& modelpath, const std::string& prompt, const InferenceOptions& options);
+    std::string kzzk_llm(const std::string& modelfile, const std::string& prompt);
+    std::string kzzk_llm(const std::string& modelfile, const std::string& prompt, const InferenceOptions& options);
 
     // JSON格式响应接口
     std::string chatWithJson(
@@ -108,7 +108,7 @@ private:
 };
 
 // 全局便捷函数
-std::string kzzk_llm(const std::string& modelpath, const std::string& prompt);
-std::string kzzk_llm(const std::string& modelpath, const std::string& prompt, const InferenceOptions& options);
+std::string kzzk_llm(const std::string& modelfile, const std::string& prompt);
+std::string kzzk_llm(const std::string& modelfile, const std::string& prompt, const InferenceOptions& options);
 
 } // namespace kzzk

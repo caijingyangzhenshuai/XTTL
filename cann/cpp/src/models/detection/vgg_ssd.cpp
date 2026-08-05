@@ -6,7 +6,7 @@
 #include <cmath>
 #include <cstring>
 
-namespace kzzk_cv {
+namespace kzzk {
 const int   VGG_SSD::kModelWidth       = 300;
 const int   VGG_SSD::kModelHeight      = 300;
 const int   VGG_SSD::kAippWidth        = 304;    // 对齐 Python aipp_input_w=304
@@ -443,4 +443,4 @@ InferenceResult VGG_SSD::Infer(const std::string& image_path) {
     return result;
 }
 
-} // namespace kzzk_cv
+} // namespace kzzk

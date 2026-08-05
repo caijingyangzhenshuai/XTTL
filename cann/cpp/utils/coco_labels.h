@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-namespace kzzk_cv {
+namespace kzzk {
 
 inline const std::vector<std::string>& GetCocoLabels() {
     static const std::vector<std::string> labels = {
@@ -32,6 +32,6 @@ inline const std::string& GetCocoLabel(int class_id) {
     return unknown;
 }
 
-} // namespace kzzk_cv
+} // namespace kzzk
 
 #endif // KZZK_CV_COCO_LABELS_H

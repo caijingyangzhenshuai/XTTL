@@ -9,7 +9,7 @@
 #include "acl/acl.h"
 #include "opencv2/opencv.hpp"
 
-namespace kzzk_cv {
+namespace kzzk {
 
 // RT-DETR：COCO 80 类目标检测，模型为 2 输入：
 //   input[0] = FP32 CHW 图像（1x3x640x640，RGB /255 归一化）
@@ -73,6 +73,6 @@ private:
     static const int   kTopK;             // 10（对齐 Python TOP_K）
 };
 
-} // namespace kzzk_cv
+} // namespace kzzk
 
 #endif // KZZK_CV_RT_DETR_H

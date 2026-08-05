@@ -6,7 +6,7 @@
 #include <cstring>
 #include <unordered_map>
 
-namespace kzzk_cv {
+namespace kzzk {
 
 DeepLabV3::DeepLabV3()
     : context_(nullptr), stream_(nullptr),
@@ -376,4 +376,4 @@ InferenceResult DeepLabV3::Infer(const std::string& image_path) {
     return result;
 }
 
-} // namespace kzzk_cv
+} // namespace kzzk

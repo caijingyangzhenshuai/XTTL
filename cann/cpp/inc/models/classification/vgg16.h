@@ -10,7 +10,7 @@
 #include "acl/acl.h"
 #include "opencv2/opencv.hpp"
 
-namespace kzzk_cv {
+namespace kzzk {
 
 class VGG16 : public BaseModel {
 public:
@@ -72,6 +72,6 @@ private:
     static const int kMaxTopGapPercent   = 101;
 };
 
-} // namespace kzzk_cv
+} // namespace kzzk
 
 #endif // KZZK_CV_VGG16_H

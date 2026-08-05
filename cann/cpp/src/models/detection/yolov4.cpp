@@ -30,7 +30,7 @@ static NullOStream g_null_ostream;
 #  define YOLOV4_CERR   YOLOV4_CERR        // 调试模式 → 正常打印到 stderr
 #endif
 
-namespace kzzk_cv {
+namespace kzzk {
 
 const size_t YOLOv4::kClassNum = 80;
 // 多尺度 anchors 总数: (13^2 + 26^2 + 52^2) * 3 = (169 + 676 + 2704) * 3 = 3549 * 3 = 10647
@@ -1319,4 +1319,4 @@ InferenceResult YOLOv4::Infer(const std::string& image_path) {
     return result;
 }
 
-} // namespace kzzk_cv
+} // namespace kzzk

@@ -211,8 +211,8 @@ C++ 代码位于 [cann/cpp/](file:///c:/Users/迟昕玥/Desktop/协同推理/cod
 声明在 [cann/cpp/inc/kzzk_cv.h](file:///c:/Users/迟昕玥/Desktop/协同推理/code/cann/cpp/inc/kzzk_cv.h)：
 
 ```cpp
-namespace kzzk_cv {
-    InferenceResult kzzk_cv(const std::string& model_path, const std::string& image_path);
+namespace kzzk {
+    InferenceResult kzzk_cv(const std::string& modelfile, const std::string& imagefile);
 }
 ```
 
@@ -404,8 +404,8 @@ namespace kzzk {
                         const std::map<std::string, nlohmann::json>& options = {});
 
         // 简化版单轮对话（对应全局 kzzk_llm()）
-        std::string kzzk_llm(const std::string& modelpath, const std::string& prompt);
-        std::string kzzk_llm(const std::string& modelpath, const std::string& prompt,
+        std::string kzzk_llm(const std::string& modelfile, const std::string& prompt);
+        std::string kzzk_llm(const std::string& modelfile, const std::string& prompt,
                             const InferenceOptions& options);
 
         // 直接 POST 原始 JSON
@@ -416,7 +416,7 @@ namespace kzzk {
     };
 
     // 全局便捷函数
-    std::string kzzk_llm(const std::string& modelpath, const std::string& prompt);
+    std::string kzzk_llm(const std::string& modelfile, const std::string& prompt);
 }
 ```
 

@@ -6,7 +6,7 @@
 #include <cmath>
 #include <cstring>
 
-namespace kzzk_cv {
+namespace kzzk {
 
 const int   YOLOv3::kInputWidth     = 416;
 const int   YOLOv3::kInputHeight    = 416;
@@ -402,4 +402,4 @@ InferenceResult YOLOv3::Infer(const std::string& image_path) {
     return result;
 }
 
-} // namespace kzzk_cv
+} // namespace kzzk

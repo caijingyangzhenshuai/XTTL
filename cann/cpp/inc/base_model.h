@@ -4,7 +4,7 @@
 #include <string>
 #include "types.h"
 
-namespace kzzk_cv {
+namespace kzzk {
 
 class BaseModel {
 public:
@@ -25,6 +25,6 @@ protected:
     std::string model_path_;
 };
 
-} // namespace kzzk_cv
+} // namespace kzzk
 
 #endif // KZZK_CV_BASE_MODEL_H
