@@ -397,16 +397,17 @@ namespace kzzk {
                   long timeoutSeconds = 300, bool enableDebug = false);
 
         // 统一聊天接口
-        std::string chat(const std::string& model,
+        std::string chat(const std::string& modelfile,
                         const std::vector<ChatMessage>& messages,
                         bool stream = false,
                         const InferenceOptions& params = {},
                         const std::map<std::string, nlohmann::json>& options = {});
 
-        // 简化版单轮对话（对应全局 kzzk_llm()）
-        std::string kzzk_llm(const std::string& modelfile, const std::string& prompt);
-        std::string kzzk_llm(const std::string& modelfile, const std::string& prompt,
-                            const InferenceOptions& options);
+        // JSON格式响应接口
+        std::string chatWithJson(const std::string& modelfile,
+                        const std::vector<ChatMessage>& messages,
+                        bool stream = false,
+                        const InferenceOptions& params = {});
 
         // 直接 POST 原始 JSON
         std::string postJson(const std::string& endpoint, const std::string& body);
@@ -415,8 +416,10 @@ namespace kzzk {
         ModelInfo getModelInfo(const std::string& modelName);
     };
 
-    // 全局便捷函数
+    // 全局便捷函数（单轮对话）
     std::string kzzk_llm(const std::string& modelfile, const std::string& prompt);
+    std::string kzzk_llm(const std::string& modelfile, const std::string& prompt,
+                         const InferenceOptions& options);
 }
 ```
 

@@ -26,21 +26,21 @@ set(SOURCES
 )
 
 # 创建静态库
-add_library(kzzk_llm_static STATIC ${SOURCES})
+add_library(kzzk_llm STATIC ${SOURCES})
 
 # 链接依赖（使用系统 curl）
-target_link_libraries(kzzk_llm_static
+target_link_libraries(kzzk_llm
     PRIVATE
     CURL::libcurl
     Threads::Threads
 )
 
 # 创建命令行工具
-add_executable(kzzk_llm src/main.cpp)
+add_executable(kzzk_llm_exe src/main.cpp)
 
-target_link_libraries(kzzk_llm
+target_link_libraries(kzzk_llm_exe
     PRIVATE
-    kzzk_llm_static
+    kzzk_llm
     CURL::libcurl
     Threads::Threads
 )
@@ -50,16 +50,21 @@ add_executable(test_llm ../examples/test_llm.cpp)
 
 target_link_libraries(test_llm
     PRIVATE
-    kzzk_llm_static
+    kzzk_llm
     CURL::libcurl
     Threads::Threads
 )
 
 # 安装目标
-install(TARGETS kzzk_llm kzzk_llm_static
+install(TARGETS kzzk_llm_exe kzzk_llm
     RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
+)
+
+# 重命名命令行输出文件为 kzzk_llm（避免与库目标名冲突）
+set_target_properties(kzzk_llm_exe PROPERTIES
+    OUTPUT_NAME kzzk_llm
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 
 # 安装头文件

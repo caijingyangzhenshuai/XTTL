@@ -14,7 +14,7 @@ struct InferenceOptions {
     float temperature = 0.7f;
     int max_tokens = 1024;
     float top_p = 1.0f;
-    float top_k = 50;
+    int top_k = 50;            // 必须为整数类型（MindIE 要求）
     float repetition_penalty = 1.0f;
     int num_beams = 1;
     bool do_sample = true;
@@ -53,9 +53,10 @@ class LLMClient {
 public:
     // 构造函数
     LLMClient(
-        const std::string& baseUrl = "http://127.0.0.1:8000",
+        const std::string& baseUrl = "http://127.0.0.1:1025",
         long timeoutSeconds = 300,
-        bool enableDebug = false
+        bool enableDebug = false,
+        bool silent = false
     );
 
     // 析构函数
@@ -78,9 +79,6 @@ public:
         const std::map<std::string, nlohmann::json>& options = {}
     );
 
-    // 简化接口 - 单轮对话
-    std::string kzzk_llm(const std::string& modelfile, const std::string& prompt);
-    std::string kzzk_llm(const std::string& modelfile, const std::string& prompt, const InferenceOptions& options);
 
     // JSON格式响应接口
     std::string chatWithJson(
@@ -110,5 +108,6 @@ private:
 // 全局便捷函数
 std::string kzzk_llm(const std::string& modelfile, const std::string& prompt);
 std::string kzzk_llm(const std::string& modelfile, const std::string& prompt, const InferenceOptions& options);
+std::vector<ModelInfo> list_models();
 
 } // namespace kzzk

@@ -26,15 +26,17 @@ public:
     bool debugMode_;
     int maxRetries_;
 
-    Impl(const std::string& baseUrl, long timeoutSeconds, bool enableDebug)
+    Impl(const std::string& baseUrl, long timeoutSeconds, bool enableDebug, bool silent = false)
         : baseUrl_(baseUrl), timeoutSeconds_(timeoutSeconds), debugMode_(enableDebug), maxRetries_(3) {
         curl_global_init(CURL_GLOBAL_ALL);
-        std::cout << "MindIE Client 初始化成功" << std::endl;
-        std::cout << "服务地址: " << baseUrl_ << std::endl;
-        std::cout << "超时设置: " << timeoutSeconds_ << " 秒" << std::endl;
-        std::cout << "重试次数: " << maxRetries_ << std::endl;
-        if (timeoutSeconds_ >= 300) {
-            std::cout << "注意: 超时时间较长，建议等待模型预热完成" << std::endl;
+        if (!silent) {
+            std::cout << "MindIE Client 初始化成功" << std::endl;
+            std::cout << "服务地址: " << baseUrl_ << std::endl;
+            std::cout << "超时设置: " << timeoutSeconds_ << " 秒" << std::endl;
+            std::cout << "重试次数: " << maxRetries_ << std::endl;
+            if (timeoutSeconds_ >= 300) {
+                std::cout << "注意: 超时时间较长，建议等待模型预热完成" << std::endl;
+            }
         }
     }
 
@@ -241,8 +243,8 @@ public:
     }
 };
 
-LLMClient::LLMClient(const std::string& baseUrl, long timeoutSeconds, bool enableDebug)
-    : pImpl(std::make_unique<Impl>(baseUrl, timeoutSeconds, enableDebug)) {}
+LLMClient::LLMClient(const std::string& baseUrl, long timeoutSeconds, bool enableDebug, bool silent)
+    : pImpl(std::make_unique<Impl>(baseUrl, timeoutSeconds, enableDebug, silent)) {}
 
 LLMClient::~LLMClient() = default;
 
@@ -353,18 +355,6 @@ std::string LLMClient::chat(
     return "";
 }
 
-std::string LLMClient::kzzk_llm(const std::string& modelfile, const std::string& prompt) {
-    InferenceOptions options;
-    return kzzk_llm(modelfile, prompt, options);
-}
-
-std::string LLMClient::kzzk_llm(const std::string& modelfile, const std::string& prompt, const InferenceOptions& options) {
-    if (modelfile.empty() || prompt.empty()) {
-        return "";
-    }
-    std::vector<ChatMessage> messages = {{ "user", prompt }};
-    return chat(modelfile, messages, false, options);
-}
 
 std::string LLMClient::chatWithJson(
     const std::string& model,
@@ -498,14 +488,28 @@ ModelInfo LLMClient::getModelInfo(const std::string& modelName) {
     return info;
 }
 
+
 std::string kzzk_llm(const std::string& modelfile, const std::string& prompt) {
-    LLMClient client;
-    return client.kzzk_llm(modelfile, prompt);
+    LLMClient client("http://127.0.0.1:1025", 300L, false, true);
+    if (modelfile.empty() || prompt.empty()) {
+        return "";
+    }
+    std::vector<ChatMessage> messages = {{ "user", prompt }};
+    return client.chat(modelfile, messages, false, InferenceOptions());
 }
 
 std::string kzzk_llm(const std::string& modelfile, const std::string& prompt, const InferenceOptions& options) {
+    LLMClient client("http://127.0.0.1:1025", 300L, false, true);
+    if (modelfile.empty() || prompt.empty()) {
+        return "";
+    }
+    std::vector<ChatMessage> messages = {{ "user", prompt }};
+    return client.chat(modelfile, messages, false, options);
+}
+
+std::vector<ModelInfo> list_models() {
     LLMClient client;
-    return client.kzzk_llm(modelfile, prompt, options);
+    return client.listModels();
 }
 
 } // namespace kzzk

@@ -175,11 +175,35 @@ build_project() {
     rm -rf "$BUILD_DIR"/*
     cd "$BUILD_DIR"
     cmake .. && make -j$(nproc)
-    
-    if [ -f "$BUILD_DIR/$EXE_NAME" ]; then
-        cp "$BUILD_DIR/$EXE_NAME" /usr/local/bin/
+
+    # 可执行文件输出到 build/bin/ 目录（由 CMakeLists.txt 的 CMAKE_RUNTIME_OUTPUT_DIRECTORY 指定）
+    local exe_src="$BUILD_DIR/bin/$EXE_NAME"
+    if [ -f "$exe_src" ]; then
+        cp "$exe_src" /usr/local/bin/
         chmod +x /usr/local/bin/$EXE_NAME
         log_info "可执行文件已部署: /usr/local/bin/$EXE_NAME"
+    else
+        # 兼容旧版：如果 bin/ 下不存在，回退到 build 根目录查找
+        exe_src="$BUILD_DIR/$EXE_NAME"
+        if [ -f "$exe_src" ]; then
+            cp "$exe_src" /usr/local/bin/
+            chmod +x /usr/local/bin/$EXE_NAME
+            log_info "可执行文件已部署: /usr/local/bin/$EXE_NAME"
+        else
+            log_warn "未找到可执行文件 $EXE_NAME，跳过部署"
+            log_warn "请检查编译输出目录: $BUILD_DIR"
+            find "$BUILD_DIR" -name "$EXE_NAME" -type f 2>/dev/null | while read f; do
+                log_warn "  找到: $f"
+            done
+        fi
+    fi
+
+    # 同时部署测试程序
+    local test_src="$BUILD_DIR/bin/test_llm"
+    if [ -f "$test_src" ]; then
+        cp "$test_src" /usr/local/bin/
+        chmod +x /usr/local/bin/test_llm
+        log_info "测试程序已部署: /usr/local/bin/test_llm"
     fi
     cd /
 }
