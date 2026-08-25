@@ -2,8 +2,10 @@
 #include "base_model.h"
 #include "models/detection/yolov4.h"
 #include "models/detection/yolov3.h"
+#include "models/detection/yolov3_yuv.h"
 #include "models/detection/vgg_ssd.h"
 #include "models/detection/rt_detr.h"
+#include "models/detection/ssd.h"
 #include "models/classification/resnet50.h"
 #include "models/classification/mobilenetv1.h"
 #include "models/classification/vgg16.h"
@@ -59,6 +61,9 @@ static std::unique_ptr<BaseModel> create_model(const std::string& model_name) {
 
     if (lower.find("yolov4") != std::string::npos) {
         return std::make_unique<YOLOv4>();
+    } else if (lower.find("yolov3_yuv") != std::string::npos ||
+               lower.find("yolov3-yuv") != std::string::npos) {
+        return std::make_unique<YOLOv3YUV>();
     } else if (lower.find("yolov3") != std::string::npos) {
         return std::make_unique<YOLOv3>();
     } else if (lower.find("vgg_ssd") != std::string::npos || lower.find("vgg-ssd") != std::string::npos) {
@@ -67,6 +72,8 @@ static std::unique_ptr<BaseModel> create_model(const std::string& model_name) {
                lower.find("rt_detr") != std::string::npos ||
                lower.find("rt-detr") != std::string::npos) {
         return std::make_unique<RT_DETR>();
+    } else if (lower.find("ssd") != std::string::npos) {
+        return std::make_unique<SSD>();
     } else if (lower.find("resnet50") != std::string::npos) {
         return std::make_unique<ResNet50>();
     } else if (lower.find("mobilenet") != std::string::npos) {
@@ -106,7 +113,7 @@ InferenceResult kzzk_cv(const std::string& modelfile, const std::string& imagefi
     if (!model) {
         std::cerr << "[ERROR] 无法识别的模型类型: '" << model_name
                   << "' (从文件名 " << modelfile << " 解析)" << std::endl;
-        std::cerr << "        支持的关键字: yolov4 / yolov3 / vgg_ssd / rt_detr / resnet50 / mobilenet / vgg16 / deeplabv3" << std::endl;
+        std::cerr << "        支持的关键字: yolov4 / yolov3 / yolov3_yuv / vgg_ssd / rt_detr / ssd / resnet50 / mobilenet / vgg16 / deeplabv3" << std::endl;
         result.model_name = model_name;
         result.model_type = ModelType::DETECTION;
         return result;

@@ -14,7 +14,7 @@ def _get_model_class(model_name):
     """按文件名匹配模型类，同时返回标准模型名（对齐 C++ 的 GetModelName）。
 
     返回: (model_class, standard_name, model_type) 或 None
-    标准模型名固定为: yolov4 / yolov3 / vgg_ssd / rt_detr /
+    标准模型名固定为: yolov4 / yolov3 / yolov3_yuv / vgg_ssd / ssd / rt_detr /
                      resnet50 / mobilenetv1 / vgg16 / deeplabv3
     """
     name = model_name.lower()
@@ -23,6 +23,10 @@ def _get_model_class(model_name):
         from .models.detection.yolov4 import YOLOv4Detect
         return YOLOv4Detect, 'yolov4', 'detection'
 
+    if 'yolov3_yuv' in name:
+        from .models.detection.yolov3_yuv import YOLOv3YUVDetect
+        return YOLOv3YUVDetect, 'yolov3_yuv', 'detection'
+
     if 'yolov3' in name:
         from .models.detection.yolov3 import YOLOv3Detect
         return YOLOv3Detect, 'yolov3', 'detection'
@@ -30,6 +34,10 @@ def _get_model_class(model_name):
     if 'vgg' in name and 'ssd' in name:
         from .models.detection.vgg_ssd import VGGSSDDetect
         return VGGSSDDetect, 'vgg_ssd', 'detection'
+
+    if 'ssd' in name:
+        from .models.detection.ssd import SSDDetect
+        return SSDDetect, 'ssd', 'detection'
 
     if 'rt-detr' in name or 'rt_detr' in name or 'rtdetr' in name:
         from .models.detection.rt_detr import RTDETRDetect

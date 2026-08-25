@@ -309,9 +309,11 @@ set(KZZK_CV_LIB_SOURCES
     src/base_model.cpp
     src/kzzk_cv.cpp
     src/models/detection/yolov3.cpp
+    src/models/detection/yolov3_yuv.cpp
     src/models/detection/yolov4.cpp
     src/models/detection/vgg_ssd.cpp
     src/models/detection/rt_detr.cpp
+    src/models/detection/ssd.cpp
     src/models/classification/resnet50.cpp
     src/models/classification/mobilenetv1.cpp
     src/models/classification/vgg16.cpp

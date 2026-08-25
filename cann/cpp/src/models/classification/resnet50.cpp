@@ -3,8 +3,15 @@
 #include <algorithm>
 #include <chrono>
 #include <cmath>
+#include <cstring>
 
 namespace kzzk {
+
+// ResNet50 常量
+// 用匿名 namespace 静态全局变量存从 .om 解析出的真实输入尺寸（不依赖头文件）
+static int   g_rn50_width  = 224;
+static int   g_rn50_height = 224;
+static const int   RN50_RESIZE_SHORT = 256;   // 短边 resize 目标
 
 ResNet50::ResNet50()
     : context_(nullptr), stream_(nullptr),
@@ -76,6 +83,24 @@ bool ResNet50::LoadModel(const char* model_path) {
     ret = aclmdlGetDesc(model_desc_, model_id_);
     if (ret != ACL_ERROR_NONE) return false;
 
+    // 从 .om 文件自动解析输入尺寸（同 MobileNetV1 策略）
+    size_t num_inputs = aclmdlGetNumInputs(model_desc_);
+    if (num_inputs >= 1) {
+        aclmdlIODims input_dims;
+        ret = aclmdlGetInputDims(model_desc_, 0, &input_dims);
+        if (ret == ACL_ERROR_NONE && input_dims.dimCount >= 4) {
+            int h = 0, w = 0;
+            for (size_t i = 1; i < input_dims.dimCount; ++i) {
+                int d = static_cast<int>(input_dims.dims[i]);
+                if (d == 1 || d == 3 || d == 4) continue;
+                if (h == 0) h = d;
+                else if (w == 0) w = d;
+            }
+            if (h > 0) g_rn50_height = h;
+            if (w > 0) g_rn50_width  = w;
+        }
+    }
+
     return true;
 }
 
@@ -98,22 +123,30 @@ bool ResNet50::PreProcess(const std::string& image_path, std::vector<float>& out
     orig_w = img.cols;
     orig_h = img.rows;
 
+    // 从 .om 解析出的真实尺寸（默认 224x224）
+    int mw = g_rn50_width  > 0 ? g_rn50_width  : 224;
+    int mh = g_rn50_height > 0 ? g_rn50_height : 224;
+
+    // 对齐 Python resnet50.py 的预处理：
+    //   1) resize 到 (mw, mh)
+    //   2) BGR → RGB
+    //   3) /255.0 → [0,1]
+    // Python 不做 mean/std 归一化（注释掉了），这里保持一致
     cv::Mat resized;
-    cv::resize(img, resized, cv::Size(kInputWidth, kInputHeight));
+    cv::resize(img, resized, cv::Size(mw, mh), 0, 0, cv::INTER_LINEAR);
 
     cv::Mat rgb;
     cv::cvtColor(resized, rgb, cv::COLOR_BGR2RGB);
 
-    rgb.convertTo(rgb, CV_32FC3);
+    rgb.convertTo(rgb, CV_32FC3, 1.0 / 255.0);  // [0,255] → [0,1]
 
-    output.resize(kInputWidth * kInputHeight * 3);
+    output.resize((size_t)3 * (size_t)mh * (size_t)mw);
     float* out_ptr = output.data();
 
     for (int c = 0; c < 3; ++c) {
-        for (int h = 0; h < kInputHeight; ++h) {
-            for (int w = 0; w < kInputWidth; ++w) {
-                out_ptr[c * kInputHeight * kInputWidth + h * kInputWidth + w] =
-                    rgb.at<cv::Vec3f>(h, w)[c];
+        for (int h = 0; h < mh; ++h) {
+            for (int w = 0; w < mw; ++w) {
+                out_ptr[c * mh * mw + h * mw + w] = rgb.at<cv::Vec3f>(h, w)[c];
             }
         }
     }
@@ -189,10 +222,42 @@ void ResNet50::PostProcess(const float* host_out_data, size_t num_classes,
     results.clear();
     if (!host_out_data || num_classes == 0) return;
 
+    // ---- 智能 Softmax：与 Python 版一致 ----
+    // 若输出值不在 [0,1] 范围内 → raw logits，需做 Softmax
+    // 若输出已在 [0,1] 范围内 → 已是概率，直接使用（避免重复归一化）
+    float vmin = host_out_data[0];
+    float vmax = host_out_data[0];
+    for (size_t i = 1; i < num_classes; ++i) {
+        if (host_out_data[i] < vmin) vmin = host_out_data[i];
+        if (host_out_data[i] > vmax) vmax = host_out_data[i];
+    }
+
+    std::vector<float> probs(num_classes);
+    if (vmin < -1e-6f || vmax > 1.0f + 1e-6f) {
+        // raw logits → Softmax: exp(x - max(x)) / sum(exp(x - max(x)))
+        float max_logit = vmax;
+        float sum_exp = 0.0f;
+        for (size_t i = 0; i < num_classes; ++i) {
+            probs[i] = std::exp(host_out_data[i] - max_logit);
+            sum_exp += probs[i];
+        }
+        for (size_t i = 0; i < num_classes; ++i) {
+            probs[i] = (sum_exp > 0.0f) ? (probs[i] / sum_exp) : 0.0f;
+        }
+    } else {
+        // 已是概率，钳制防异常
+        for (size_t i = 0; i < num_classes; ++i) {
+            float p = host_out_data[i];
+            if (p < 0.0f) p = 0.0f;
+            if (p > 1.0f) p = 1.0f;
+            probs[i] = p;
+        }
+    }
+
     std::vector<std::pair<float, int>> scores;
     scores.reserve(num_classes);
     for (size_t i = 0; i < num_classes; ++i) {
-        scores.emplace_back(host_out_data[i], static_cast<int>(i));
+        scores.emplace_back(probs[i], static_cast<int>(i));
     }
 
     int top_k = std::min(kTopK, static_cast<int>(num_classes));

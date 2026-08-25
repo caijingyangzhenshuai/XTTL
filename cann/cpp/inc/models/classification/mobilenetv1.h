@@ -27,7 +27,7 @@ private:
     void DestroyAclResource();
     bool LoadModel(const char* model_path);
     void UnloadModel();
-    bool PreProcess(const std::string& image_path, std::vector<float>& output);
+    bool PreProcess(const std::string& image_path, std::vector<uint8_t>& output);
     bool CreateModelInput(void* input_data_buffer, size_t buffer_size);
     void DestroyModelInput();
     bool CreateModelOutput();

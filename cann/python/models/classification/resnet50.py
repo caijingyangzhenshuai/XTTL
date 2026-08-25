@@ -25,7 +25,14 @@ class ResNet50Classify(BaseModel):
         img_resized = np.array(Image.fromarray(img).resize(
             (self._model_width, self._model_height), Image.BILINEAR))
 
-        img_float = img_resized.astype(np.float32)
+        # ONNX ResNet50 通常需要 ImageNet 归一化：/255 后再减 mean/std
+        # 这里先做 /255 归一化到 [0,1]
+        img_float = img_resized.astype(np.float32) / 255.0
+
+        # ImageNet mean/std 归一化（如果模型需要）
+        # mean = [0.485, 0.456, 0.406]
+        # std  = [0.229, 0.224, 0.225]
+        # img_float = (img_float - mean) / std
 
         img_chw = np.transpose(img_float, (2, 0, 1))
         img_input = np.expand_dims(img_chw, axis=0).astype(np.float32)
@@ -44,16 +51,21 @@ class ResNet50Classify(BaseModel):
         if output.ndim > 1:
             output = output.flatten()
 
+        # 对输出做 softmax 归一化（ONNX 模型输出通常是 logits）
+        exp_output = np.exp(output - np.max(output))
+        probs = exp_output / np.sum(exp_output)
+
         if DEBUG:
             print("[DEBUG] output shape=%s, min=%.3f, max=%.3f" % (
                 output.shape, float(output.min()), float(output.max())))
+            print("[DEBUG] probs top5:", np.sort(probs)[::-1][:5])
 
-        top_indices = np.argsort(output)[::-1][:TOP_K]
+        top_indices = np.argsort(probs)[::-1][:TOP_K]
 
         results = []
         for idx in top_indices:
             idx = int(idx)
-            conf = int(round(float(output[idx]) * 100))
+            conf = int(round(float(probs[idx]) * 100))
             results.append({
                 "class_id": idx,
                 "confidence": conf
