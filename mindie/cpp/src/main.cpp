@@ -92,6 +92,7 @@ int main(int argc, char* argv[]) {
         kzzk::LLMClient client(serverUrl, 600L, false);
 
         if (listModels) {
+            std::cout << "模型列表显示 C++版" << "\n";
             std::vector<kzzk::ModelInfo> models = client.listModels();
             std::cout << "Available Models:\n";
             std::cout << "-------------------\n";
@@ -120,6 +121,7 @@ int main(int argc, char* argv[]) {
 
         prompt = cleanPrompt(prompt);
 
+        std::cout << modelName << "模型交互 C++版" << "\n";
         std::cout << "Using model: " << modelName << "\n";
         std::cout << "Server: " << serverUrl << "\n";
         std::cout << "Prompt: " << prompt << "\n";

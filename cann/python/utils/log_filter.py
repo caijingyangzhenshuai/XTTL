@@ -85,7 +85,9 @@ _default_filter = None
 def start_filter():
     global _default_filter
     if _default_filter is None:
-        _default_filter = StdoutFilter(lambda line: line.strip().startswith("[INFO]"))
+        _default_filter = StdoutFilter(
+            lambda line: line.strip().startswith("[INFO]")
+            and "[MobileNetV1]" not in line)
     return _default_filter
 
 

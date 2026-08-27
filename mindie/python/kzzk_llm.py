@@ -31,6 +31,7 @@ def main():
         sys.exit(0)
 
     if "--listModels" in args:
+        print("模型列表显示 Python版")
         models = list_models()
         if models:
             print("可用模型:")
@@ -60,6 +61,7 @@ def main():
         sys.exit(1)
 
     try:
+        print(f"{modelfile}模型交互 Python版")
         reply = kzzk_llm(modelfile, prompt)
         print(reply)
     except Exception as e:

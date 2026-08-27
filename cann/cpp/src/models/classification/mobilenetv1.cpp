@@ -153,6 +153,7 @@ bool MobileNetV1::LoadModel(const char* model_path) {
         case ACL_FLOAT16: in_type_str = "FP16";  break;
         case ACL_INT8:    in_type_str = "INT8";  break;
         case ACL_UINT8:   in_type_str = "UINT8"; break;
+        default: break;
     }
     const char* out_type_str = "?";
     switch(g_mb1_output_type) {
@@ -160,6 +161,7 @@ bool MobileNetV1::LoadModel(const char* model_path) {
         case ACL_FLOAT16: out_type_str = "FP16";  break;
         case ACL_INT8:    out_type_str = "INT8";  break;
         case ACL_UINT8:   out_type_str = "UINT8"; break;
+        default: break;
     }
     std::cerr << "[INFO][MobileNetV1] 模型精度: 输入=" << in_type_str
               << ", 输出=" << out_type_str << std::endl;

@@ -26,10 +26,41 @@ TOP_K = 5
 
 
 class MobileNetV1Classify(BaseModel):
+    # ACL 数据类型 -> 精度名称（对齐 C++ MobileNetV1 的 in_type_str/out_type_str）
+    _DTYPE_NAME = None
+
     def __init__(self, model_path):
         super().__init__(model_path)
         self._model_width = MODEL_WIDTH
         self._model_height = MODEL_HEIGHT
+
+    def init(self):
+        ret = super().init()
+        # 打印精度信息（对齐 C++ aclmdlGetInputDataType/GetOutputDataType）
+        import acl
+        import constants as const
+        if self._DTYPE_NAME is None:
+            self._DTYPE_NAME = {
+                const.ACL_FLOAT:   "FP32",
+                const.ACL_FLOAT16: "FP16",
+                const.ACL_INT8:    "INT8",
+                const.ACL_UINT8:   "UINT8",
+            }
+        desc = getattr(self._model, "_model_desc", None)
+        in_type_str = "?"
+        out_type_str = "?"
+        if desc is not None:
+            try:
+                in_type_str = self._DTYPE_NAME.get(
+                    acl.mdl.get_input_data_type(desc, 0), "?")
+                out_type_str = self._DTYPE_NAME.get(
+                    acl.mdl.get_output_data_type(desc, 0), "?")
+            except Exception:
+                pass
+        sys.stderr.write(
+            "[INFO][MobileNetV1] 模型精度: 输入=%s, 输出=%s\n"
+            % (in_type_str, out_type_str))
+        return ret
 
     def _preprocess_pil(self, pil_image):
         if USE_INT8:
