@@ -120,3 +120,36 @@ cann/src/build/lib/libkzzk_acl_lib.so
 cann/third_party/Ascend-cann-toolkit_8.2.RC1_linux-aarch64.run
 mindie/1.md
 mindie/2.md
+
+# ============ 受控库净化：编译产物与工具临时文件（受控库整改） ============
+# Python 编译字节码与缓存
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 工具会话/计划临时文件
+.zcode/
+plan-sess_*
+
+# Python 包构建产物
+*.egg-info/
+*.egg
+build/
+dist/
+
+# CMake 构建产物（通用兜底）
+CMakeCache.txt
+CMakeFiles/
+*.o
+*.so
+*.a
+Makefile
+
+# 临时/备份文件
+.tmp/
+tmp/
+*.tmp
+*.bak
+*.swp
+_DS_Store
+._*
