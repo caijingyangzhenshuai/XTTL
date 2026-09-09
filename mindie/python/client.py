@@ -102,15 +102,17 @@ def kzzk_llm(modelfile, prompt, server_url=None, max_tokens=1024, temperature=0.
                         elif "message" in result["choices"][0] and "content" in result["choices"][0]["message"]:
                             response_text = result["choices"][0]["message"]["content"]
                     elif "response" in result:
-                        response_text = str(result["response"])
+                        response_text = result["response"]
                     elif "text" in result:
-                        response_text = str(result["text"])
+                        response_text = result["text"]
                     elif "output" in result:
                         if isinstance(result["output"], dict) and "text" in result["output"]:
-                            response_text = str(result["output"]["text"])
+                            response_text = result["output"]["text"]
                         else:
-                            response_text = str(result["output"])
+                            response_text = result["output"]
 
+                    # 服务端可能把生成文本放在列表里（如 ["xxx"]），统一转成纯文本
+                    response_text = _to_text(response_text)
                     response_text = _clean_response(response_text)
 
                     return response_text.strip()
@@ -133,6 +135,22 @@ def kzzk_llm(modelfile, prompt, server_url=None, max_tokens=1024, temperature=0.
 
     error_msg = "所有 API 端点都无法调用成功:\n" + "\n".join(f"  - {e}" for e in errors)
     raise RuntimeError(error_msg)
+
+
+def _to_text(value):
+    """把服务端返回的文本统一转成字符串（兼容字符串、字符串列表、嵌套 dict）"""
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value
+    if isinstance(value, (list, tuple)):
+        parts = [_to_text(item) for item in value]
+        return "\n".join(part for part in parts if part)
+    if isinstance(value, dict):
+        for key in ("text", "content", "response"):
+            if key in value:
+                return _to_text(value[key])
+    return str(value)
 
 
 def _clean_response(text):

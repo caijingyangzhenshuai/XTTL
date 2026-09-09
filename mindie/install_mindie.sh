@@ -130,7 +130,12 @@ update_config() {
     
     cp "$CONFIG_FILE" "${CONFIG_FILE}.bak"
     log_info "已备份: ${CONFIG_FILE}.bak"
-    
+
+    # 百川系列模型需要 trustRemoteCode 加载自定义代码
+    case "$MODEL_NAME" in
+        *Baichuan*) log_info "检测到百川模型，trustRemoteCode 将设置为 true" ;;
+    esac
+
     python3 << PYEOF
 import json, re
 
@@ -151,6 +156,10 @@ cfg["BackendConfig"]["ModelDeployConfig"]["ModelConfig"][0]["modelWeightPath"] =
 
 # 5. worldSize
 cfg["BackendConfig"]["ModelDeployConfig"]["ModelConfig"][0]["worldSize"] = $NPU_COUNT
+
+# 6. trustRemoteCode（百川模型需置为 true 以加载自定义代码）
+if "Baichuan" in "$MODEL_NAME":
+    cfg["BackendConfig"]["ModelDeployConfig"]["ModelConfig"][0]["trustRemoteCode"] = True
 
 text = json.dumps(cfg, indent=4)
 text = re.sub(r'\[\s*(\d+)\s*,\s*(\d+)\s*\]', r'[\1,\2]', text)
